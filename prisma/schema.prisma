@@ -16,34 +16,25 @@ model User {
   updatedAt DateTime @updatedAt
 
   email String @unique
-  hash String
+  hash  String
 
   firstName String?
-  lastName String?
-  bookmarks Bookmark[]
+  lastName  String?
+  Article   Article[]
 
   @@map("users")
 }
 
-model Bookmark {
+model Article {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  title String
-  description String?
-  link String
+  title   String
+  content String
 
   userId Int
-  user User @relation(fields: [userId], references: [id])
-  @@map("bookmarks")
-}
+  user   User @relation(fields: [userId], references: [id])
 
-model Article {
-  id Int @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  
-  title String
-  content String 
+  @@map("articles")
 }
