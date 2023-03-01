@@ -9,7 +9,7 @@ import { ArticleContentDto } from "./dto";
 @Controller('article')
 export class ArticleController {
     constructor(private articleService: ArticleService) { }
-    @Post('new')
+    @Post('create')
     createArticle(@GetUser('') user: User, @Body() dto: ArticleContentDto) {
         return this.articleService.createArticle({
             id: user.id,
