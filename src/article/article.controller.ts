@@ -1,9 +1,17 @@
-import { Body, Controller, Get, Post, UseGuards } from "@nestjs/common";
-import { User } from "@prisma/client";
-import { GetUser } from "src/auth/decorator";
-import { JwtGuard } from "src/guard";
-import { ArticleService } from "./article.service";
-import { ArticleContentDto } from "./dto";
+import {
+    Body,
+    Controller,
+    Get,
+    ParseIntPipe,
+    Post,
+    Query,
+    UseGuards,
+} from '@nestjs/common';
+import { User } from '@prisma/client';
+import { GetUser } from 'src/auth/decorator';
+import { JwtGuard } from 'src/guard';
+import { ArticleService } from './article.service';
+import { ArticleContentDto } from './dto';
 
 @UseGuards(JwtGuard)
 @Controller('article')
@@ -15,11 +23,11 @@ export class ArticleController {
             id: user.id,
             title: dto.title,
             content: dto.content,
-        })
+        });
     }
     @Post('get')
     getArticle(@GetUser('') user: User, @Body() getArticle) {
-        return this.articleService.getArticle(getArticle.articleId)
+        return this.articleService.getArticle(getArticle.articleId);
     }
     @Post('update')
     // 这里发现 body 好像只能接一个参数啊
@@ -28,15 +36,23 @@ export class ArticleController {
             id: user.id,
             title: updateArticle.dto.title,
             content: updateArticle.dto.content,
-        })
+        });
     }
     @Post('delete')
     deleteArticle(@GetUser('') user: User, @Body() deleteArticle) {
-        return this.articleService.deleteArticle(deleteArticle.articleId)
+        return this.articleService.deleteArticle(deleteArticle.articleId);
     }
-    @Get('getAllPublished')
-    getAllPublishedArticle(@GetUser('') user: User) {
-        return this.articleService.getAllPublishedArticles(user.id);
+    // 内容管理部分
+    @Get('getPublished')
+    getPublishedArticle(
+        @GetUser('') user: User,
+        @Query('page', ParseIntPipe) page: number,
+        @Query('pageSize', ParseIntPipe) pageSize: number,
+    ) {
+        return this.articleService.getPublishedArticles(user.id, page, pageSize);
     }
-
+    @Post('getNumber')
+    getNumber(@GetUser('') user: User, @Body() getNumber) {
+        return this.articleService.getNumber(user.id, getNumber.type);
+    }
 }

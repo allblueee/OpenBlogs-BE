@@ -65,9 +65,25 @@ export class ArticleService {
             throw error;
         }
     }
-    async getAllPublishedArticles(userId) {
-        const publishedArticles = await this.prisma.article.findMany({ where: { userId: userId } })
+    // 内容管理相关
+    async getPublishedArticles(userId, page, pageSize) {
+        const publishedArticles = await this.prisma.article.findMany({
+            where: { userId: userId },
+            skip: (page - 1) * pageSize,
+            take: pageSize,
+        })
         return publishedArticles;
+    }
+
+    async getNumber(userId, type) {
+        if (type == "published") {
+            const num = await this.prisma.article.count({
+                where: {
+                    userId: userId
+                }
+            })
+            return Math.ceil(num / 10);
+        }
     }
 
 }
