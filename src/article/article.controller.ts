@@ -55,4 +55,8 @@ export class ArticleController {
     getNumber(@GetUser('') user: User, @Body() getNumber) {
         return this.articleService.getNumber(user.id, getNumber.type);
     }
+   @Post('getRandomArticles')
+    getRandomArticles(@GetUser('') user: User){
+        return this.articleService.getRandomArticles()
+    }
 }

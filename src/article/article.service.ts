@@ -85,5 +85,19 @@ export class ArticleService {
             return Math.ceil(num / 10);
         }
     }
+    // 首页内容推荐
+    async getRandomArticles(){
+        const count = await this.prisma.article.count();
+        console.log(count);
+        // 随机选择 10 条记录
+        const randomIds = [...Array(10)].map(() => Math.floor(Math.random() * count));
+       console.log(randomIds)
+        // 查询对应的记录
+        const randomData = await this.prisma.article.findMany({
+          where: { id: { in: randomIds } },
+        });
+      
+        return randomData;
+    }
 
 }
